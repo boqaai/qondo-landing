@@ -294,7 +294,7 @@ const PainSection = () => (
   <section style={{padding:"100px 24px",background:C.bg,overflow:"hidden"}}>
     <div style={{maxWidth:1100,margin:"0 auto"}}>
       <div style={{textAlign:"center",marginBottom:64}}>
-        <h2 style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:"clamp(28px,4vw,44px)",fontWeight:700,color:C.tx,marginBottom:16,lineHeight:1.2}}>{"Asi se administra hoy \ud83d\ude2c"}</h2>
+        <h2 style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:"clamp(28px,4vw,44px)",fontWeight:700,color:C.tx,marginBottom:16,lineHeight:1.2}}>{"Asi funciona tu edificio hoy \ud83d\ude2c"}</h2>
       </div>
       {/* Block 1 & 2 side by side */}
       <div style={{display:"flex",gap:40,justifyContent:"center",flexWrap:"wrap",marginBottom:64,alignItems:"flex-start"}}>
@@ -468,7 +468,7 @@ const Features = () => {
           </h2>
           <p style={{fontSize:18,color:C.txM,maxWidth:540,margin:"0 auto",lineHeight:1.6}}>
             Sin descargar nada. Sin crear cuentas. Sin tutoriales.<br/>
-            <span style={{color:C.txD,fontStyle:"italic"}}>Sin que tu mama te llame a preguntar como se usa.</span>
+            <span style={{color:C.txD,fontStyle:"italic"}}>Ni tu mama va a tener que preguntar.</span>
           </p>
         </div>
         <div style={{textAlign:"center",marginBottom:14}}>
@@ -612,28 +612,22 @@ export default function QondoLanding() {
       <section style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",padding:"120px 24px 80px",background:"linear-gradient(180deg,"+C.bg+" 0%,"+C.bgWarm+" 100%)"}}>
         <div style={{maxWidth:1200,width:"100%",display:"flex",alignItems:"center",justifyContent:"space-between",gap:80,flexWrap:"wrap"}}>
           <div style={{flex:"1 1 500px",animation:hv?"fu 0.8s ease forwards":"none",opacity:hv?1:0}}>
-            <div style={{display:"inline-flex",alignItems:"center",gap:10,padding:"10px 18px",borderRadius:14,background:"#fff",border:"1px solid "+C.surfD,boxShadow:"0 4px 16px rgba(0,0,0,0.06)",marginBottom:28}}>
-              <div style={{width:36,height:36,borderRadius:10,background:"#25D366",display:"flex",alignItems:"center",justifyContent:"center"}}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.955 9.955 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
-              </div>
-              <div>
-                <div style={{fontSize:11,color:C.txD,fontWeight:500}}>WHATSAPP</div>
-                <div style={{fontSize:13,fontWeight:600,color:C.tx}}>Torre Palma Dorada</div>
-                <div style={{fontSize:12,color:C.txD}}>Qondo: Falsa alarma confirmada. Todo en orden.</div>
-              </div>
-              <div style={{fontSize:11,color:C.txD,alignSelf:"flex-start",marginLeft:8}}>ahora</div>
-            </div>
-            <h1 style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:"clamp(32px,5vw,56px)",fontWeight:700,lineHeight:1.08,color:C.tx,marginBottom:28,letterSpacing:"-0.03em"}}>
-              <span style={{fontWeight:400,display:"block",fontSize:"clamp(22px,3.2vw,34px)",marginBottom:10}}>
-                <span style={{color:C.accentD}}>3am.</span>{" "}
-                <span style={{color:C.txM}}>Alarma de incendios. {"\ud83d\udd25"}</span>
-              </span>
-              Ahora sabes que Don Carlos del 4B duerme en pijama de{" "}
-              <span style={{color:C.accentD}}>Pikachu.</span>
+            <h1 style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:"clamp(30px,4.5vw,52px)",fontWeight:700,lineHeight:1.12,color:C.tx,marginBottom:28,letterSpacing:"-0.03em"}}>
+              Para el chisme, el grupo del edificio.{" "}
+              <span style={{fontSize:"clamp(18px,2vw,28px)",display:"inline",verticalAlign:"middle"}}>{"\ud83d\udc40"}</span>
+              <br/>
+              Para todo lo demas,{" "}
+              <span style={{color:C.accentD}}>Qondo.</span>
             </h1>
-            <p style={{fontSize:"clamp(16px,1.8vw,19px)",color:C.txM,lineHeight:1.6,maxWidth:520,marginBottom:40}}>
-              Qondo te avisa que era falsa alarma sin salir de tu cama.{" "}
-              <span style={{color:C.txD}}>Y el secreto de Don Carlos seguiria a salvo.</span>
+            <p style={{fontSize:"clamp(15px,1.7vw,18px)",color:C.txM,lineHeight:1.65,maxWidth:540,marginBottom:16}}>
+              Solo querias confirmar que dia tocaba fumigar los pasillos y te terminaste enterando de que el vigilante del turno de noche tiene un romance secreto con la del 5C.{" "}
+              <span style={{fontSize:"clamp(13px,1.4vw,16px)",display:"inline",verticalAlign:"middle"}}>{"\ud83e\udee2"}</span>
+            </p>
+            <p style={{fontSize:"clamp(15px,1.7vw,18px)",color:C.txM,lineHeight:1.65,maxWidth:540,marginBottom:32}}>
+              El chisme esta buenisimo, quedate leyendo si quieres. Pero para resolver, ve a lo seguro: reporta un bombillo quemado, reserva areas comunes y autoriza tu delivery en segundos.
+            </p>
+            <p style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:"clamp(16px,1.8vw,20px)",fontWeight:600,color:C.tx,marginBottom:36}}>
+              Sin apps nuevas. Solo un contacto mas en tu WhatsApp.
             </p>
             <div style={{display:"flex",gap:16,flexWrap:"wrap"}}>
               <button style={{padding:"16px 36px",borderRadius:100,border:"none",background:C.accentD,color:"#fff",fontSize:16,fontWeight:600,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",boxShadow:"0 4px 20px rgba(5,150,105,0.25)"}}>{"Cont\u00e1ctanos \u2192"}</button>
