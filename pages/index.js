@@ -63,7 +63,18 @@ const WAHeader = ({name="Torre Palma Dorada"}) => (
       <div style={{color:"#fff",fontSize:14,fontWeight:500}}>{name}</div>
       <div style={{color:"rgba(255,255,255,0.7)",fontSize:11.5}}>en linea</div>
     </div>
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="rgba(255,255,255,0.8)"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+  </div>
+);
+
+const MiniStatusBar = ({time="10:13"}) => (
+  <div style={{background:"#fff",padding:"4px 14px 0",display:"flex",justifyContent:"space-between",alignItems:"center",fontSize:11,fontWeight:600,color:"#000"}}>
+    <span>{time}</span>
+    <div style={{display:"flex",alignItems:"center",gap:3}}>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="#000"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+      <div style={{width:18,height:9,borderRadius:2,border:"1.3px solid #000",display:"flex",alignItems:"center",padding:1}}>
+        <div style={{height:"100%",width:"65%",borderRadius:1,background:"#000"}}/>
+      </div>
+    </div>
   </div>
 );
 
@@ -160,39 +171,157 @@ const HeroPhone = () => {
   );
 };
 
-/* ─── PROBLEM CARDS (swipeable) ─── */
-const problems = [
-  {emoji:"\ud83d\udce2",title:"El grupo de WhatsApp es un caos",desc:"247 mensajes sin leer. La mitad son stickers, la otra mitad son quejas que nadie resuelve.",fix:"Qondo responde automaticamente, organiza y escala lo importante."},
-  {emoji:"\ud83d\udd14",title:"Nadie se entera de nada",desc:"La piscina lleva 3 dias cerrada. Tu te enteraste cuando llegaste con la toalla.",fix:"Qondo notifica al instante cuando algo cambia en el edificio."},
-  {emoji:"\ud83d\udcb0",title:"Siempre los mismos morosos",desc:"12 apartamentos deben 3 meses. El admin les da pena cobrar... otra vez.",fix:"Qondo envia recordatorios automaticos. Sin pena. Sin drama."},
-  {emoji:"\ud83d\udce6",title:"Paquetes que desaparecen",desc:"Llego tu paquete hace 3 dias. Nadie te aviso. El de porteria dice que no sabe.",fix:"Qondo le toma foto al label y te avisa al instante."},
-  {emoji:"\ud83d\uddf3\ufe0f",title:"Votaciones que nunca llegan a quorum",desc:"Se necesitan 26 votos. Hay 11. La asamblea es manana.",fix:"Qondo envia recordatorios y facilita votar en 2 mensajes."},
-  {emoji:"\ud83c\udf89",title:"Reservar el salon es un via crucis",desc:"Tienes que llamar, esperar, que revisen el cuaderno, que confirmen. Si confirman.",fix:"Qondo reserva en 30 segundos. Disponibilidad en tiempo real."},
+/* ─── BEFORE/AFTER PROBLEM CARDS ─── */
+const problemCards = [
+  {
+    problem: "Manana fumigan y te enteraste hoy por un papel en el ascensor que nadie lee.",
+    emoji: "\ud83e\uddf9",
+    color: "#fef2f2",
+    border: "#fecaca",
+    messages: [
+      {text:"Hola Laura! Te informamos que este viernes 7 se realizara la fumigacion en tu piso (4to).\n\nHorario: 9:00 AM - 11:00 AM\nSe recomienda cerrar ventanas y guardar alimentos.\n\nTe avisamos cuando terminen!",out:false,time:"Lun 3:15 p.m.",bot:true},
+      {text:"Gracias por avisar!",out:true,time:"Lun 3:20 p.m."},
+      {text:"Laura, la fumigacion del piso 4 comienza en 30 minutos. Recuerda cerrar ventanas!",out:false,time:"Vie 8:30 a.m.",bot:true},
+      {text:"Lista, ya cerre todo!",out:true,time:"Vie 8:33 a.m."},
+    ],
+    waTime: "8:33",
+  },
+  {
+    problem: "Alguien se estaciono en tu puesto. No sabes de quien es. El guardia tampoco.",
+    emoji: "\ud83d\ude97",
+    color: "#fff7ed",
+    border: "#fed7aa",
+    messages: [
+      {text:"Hay un carro en mi puesto! Placa ABC-123",out:true,time:"7:45 a.m."},
+      {text:"Revisando... Esa placa corresponde a un visitante del apto 9B (familia Rodriguez).\n\nYa le envie un mensaje al residente para que lo mueva. Te aviso cuando este libre.",out:false,time:"7:45 a.m.",bot:true},
+      {text:"El apto 9B confirma que lo mueve en 5 minutos. Disculpa la molestia!",out:false,time:"7:48 a.m.",bot:true},
+      {text:"Perfecto gracias!",out:true,time:"7:49 a.m."},
+    ],
+    waTime: "7:49",
+  },
+  {
+    problem: "Te llego un paquete hace 3 dias. Nadie te dijo.",
+    emoji: "\ud83d\udce6",
+    color: "#fef9c3",
+    border: "#fde68a",
+    messages: [
+      {text:"Hola Daniel! Llego un paquete a tu nombre. Lo recibio Jose en porteria a las 2:14pm.",out:false,time:"2:18 p.m.",bot:true},
+      {text:"Remitente: Amazon\nTracking: 1Z999AA1234567\n\nPuedes recogerlo en recepcion.",out:false,time:"2:18 p.m.",bot:true},
+      {text:"Genial ya bajo!",out:true,time:"2:25 p.m."},
+    ],
+    waTime: "2:25",
+  },
+  {
+    problem: "Le escribiste al admin el martes. Hoy es viernes. Silencio.",
+    emoji: "\ud83e\uddd1\u200d\ud83d\udcbb",
+    color: "#f0f4ff",
+    border: "#bfdbfe",
+    messages: [
+      {text:"Hola, hay una gotera en mi bano desde ayer",out:true,time:"8:10 a.m."},
+      {text:"Listo, Carlos! Cree el ticket #134 para tu gotera.\n\nPrioridad: Alta\nMantenimiento lo revisa hoy antes de las 2pm.\n\nTe aviso cuando lo asignen.",out:false,time:"8:10 a.m.",bot:true},
+      {text:"Ticket #134: El plomero Juan confirma visita hoy a la 1pm. Necesita acceso al bano principal. Estaras en casa?",out:false,time:"10:22 a.m.",bot:true},
+      {text:"Si, aqui estoy!",out:true,time:"10:30 a.m."},
+    ],
+    waTime: "10:30",
+  },
+  {
+    problem: "Querias reservar la parrilla pero el formulario tiene 15 campos.",
+    emoji: "\ud83c\udf56",
+    color: "#f0fdf4",
+    border: "#bbf7d0",
+    messages: [
+      {text:"Quiero la parrilla el sabado",out:true,time:"6:15 p.m."},
+      {text:"Hola Roberto! La parrilla esta disponible este sabado. Cuantas personas y de que hora a que hora?",out:false,time:"6:15 p.m.",bot:true},
+      {text:"Somos 8, de 12 a 6",out:true,time:"6:16 p.m."},
+      {text:"Reservado!\n\nParrilla\nSabado 8 marzo, 12pm - 6pm\nApto 2A - 8 personas\n\nRecuerda dejar el area limpia al terminar. Que la disfruten!",out:false,time:"6:16 p.m.",bot:true},
+    ],
+    waTime: "6:16",
+  },
 ];
 
-const ProblemCards = () => {
-  const ref = useRef(null);
+const ProblemCard = ({card, index}) => {
+  const [flipped, setFlipped] = useState(false);
+  const [animKey, setAnimKey] = useState(0);
+
+  const flip = () => {
+    setFlipped(!flipped);
+    setAnimKey(k=>k+1);
+  };
+
   return (
-    <section style={{padding:"100px 24px",background:C.bg}}>
-      <div style={{maxWidth:1100,margin:"0 auto"}}>
+    <div style={{minWidth:320,maxWidth:320,scrollSnapAlign:"center",flexShrink:0,cursor:"pointer",perspective:"1000px"}} onClick={flip}>
+      <div style={{position:"relative",minHeight:420,transition:"transform 0.6s cubic-bezier(0.4,0,0.2,1)",transformStyle:"preserve-3d",transform:flipped?"rotateY(180deg)":"rotateY(0)"}}>
+        {/* FRONT - Problem */}
+        <div style={{position:"absolute",inset:0,backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",borderRadius:20,padding:32,background:card.color,border:"2px solid "+card.border,display:"flex",flexDirection:"column",justifyContent:"space-between"}}>
+          <div>
+            <div style={{fontSize:48,marginBottom:20}}>{card.emoji}</div>
+            <p style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:22,fontWeight:700,color:C.tx,lineHeight:1.3}}>{card.problem}</p>
+          </div>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:24}}>
+            <span style={{fontSize:12,color:C.txD,fontWeight:500}}>SIN QONDO</span>
+            <div style={{display:"flex",alignItems:"center",gap:6,padding:"8px 16px",borderRadius:100,background:"rgba(0,0,0,0.06)",fontSize:13,color:C.txM,fontWeight:500}}>
+              Toca para ver la solucion {"\u2192"}
+            </div>
+          </div>
+        </div>
+        {/* BACK - WhatsApp solution */}
+        <div style={{position:"absolute",inset:0,backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",transform:"rotateY(180deg)",borderRadius:20,overflow:"hidden",background:C.waBg,border:"2px solid "+C.accent,boxShadow:"0 4px 20px rgba(5,150,105,0.15)"}}>
+          <MiniStatusBar time={card.waTime}/>
+          <WAHeader/>
+          <div key={animKey} style={{padding:"8px 8px",display:"flex",flexDirection:"column",background:C.waBg}}>
+            <HoyBadge/>
+            {card.messages.map((m,i)=>(
+              <Bubble key={animKey+"-"+i} text={m.text} time={m.time} out={m.out} bot={m.bot} delay={flipped? i*600+200 : 0}/>
+            ))}
+          </div>
+          <div style={{padding:"8px 12px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+            <span style={{fontSize:11,color:C.accentD,fontWeight:600}}>CON QONDO</span>
+            <div style={{fontSize:12,color:C.txD}}>{"\u2190"} Toca para volver</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ProblemSection = () => {
+  const scrollRef = useRef(null);
+  const [current, setCurrent] = useState(0);
+
+  const scroll = (dir) => {
+    if(!scrollRef.current) return;
+    const w = 340;
+    scrollRef.current.scrollBy({left:dir*w,behavior:"smooth"});
+  };
+
+  const handleScroll = () => {
+    if(!scrollRef.current) return;
+    const idx = Math.round(scrollRef.current.scrollLeft / 340);
+    setCurrent(idx);
+  };
+
+  return (
+    <section style={{padding:"100px 0",background:C.bg,overflow:"hidden"}}>
+      <div style={{maxWidth:1100,margin:"0 auto",padding:"0 24px"}}>
         <div style={{textAlign:"center",marginBottom:48}}>
           <h2 style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:"clamp(28px,4vw,44px)",fontWeight:700,color:C.tx,marginBottom:16,lineHeight:1.2}}>
-            {"Te suena familiar? \ud83e\udd14"}
+            {"Esto pasa todos los dias \ud83d\ude44"}
           </h2>
-          <p style={{fontSize:16,color:C.txD}}>Desliza para ver los problemas que Qondo resuelve</p>
+          <p style={{fontSize:17,color:C.txM,maxWidth:480,margin:"0 auto",lineHeight:1.6}}>
+            Toca cada tarjeta para ver como Qondo lo resuelve por WhatsApp.
+          </p>
         </div>
-        <div ref={ref} style={{display:"flex",gap:20,overflowX:"auto",scrollSnapType:"x mandatory",paddingBottom:20,WebkitOverflowScrolling:"touch",msOverflowStyle:"none",scrollbarWidth:"none"}}>
-          {problems.map((p,i)=>(
-            <div key={i} style={{minWidth:300,maxWidth:300,scrollSnapAlign:"start",background:"#fff",borderRadius:20,padding:28,border:"1px solid "+C.surfD,flexShrink:0,display:"flex",flexDirection:"column",gap:16}}>
-              <div style={{fontSize:40}}>{p.emoji}</div>
-              <div>
-                <h3 style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:18,fontWeight:700,color:C.tx,marginBottom:8,lineHeight:1.3}}>{p.title}</h3>
-                <p style={{fontSize:14,color:C.txM,lineHeight:1.6}}>{p.desc}</p>
-              </div>
-              <div style={{marginTop:"auto",padding:"14px 16px",background:C.accentLight,borderRadius:12,border:"1px solid "+C.accent+"30"}}>
-                <p style={{fontSize:13.5,color:C.accentD,lineHeight:1.5,fontWeight:500}}>{p.fix}</p>
-              </div>
-            </div>
+      </div>
+      <div style={{position:"relative"}}>
+        <div ref={scrollRef} onScroll={handleScroll} style={{display:"flex",gap:20,overflowX:"auto",scrollSnapType:"x mandatory",padding:"0 calc(50% - 160px) 20px",WebkitOverflowScrolling:"touch",msOverflowStyle:"none",scrollbarWidth:"none"}}>
+          {problemCards.map((card,i)=>(
+            <ProblemCard key={i} card={card} index={i}/>
+          ))}
+        </div>
+        {/* Dots */}
+        <div style={{display:"flex",justifyContent:"center",gap:8,marginTop:12}}>
+          {problemCards.map((_,i)=>(
+            <div key={i} style={{width:current===i?24:8,height:8,borderRadius:4,background:current===i?C.accentD:C.surfD,transition:"all 0.3s"}}/>
           ))}
         </div>
       </div>
@@ -332,7 +461,7 @@ const Features = () => {
   );
 };
 
-/* ─── DEMO SECTION ─── */
+/* ─── DEMO ─── */
 const DemoSection = () => (
   <section style={{padding:"100px 24px",background:C.bg}}>
     <div style={{maxWidth:800,margin:"0 auto",textAlign:"center"}}>
@@ -373,23 +502,20 @@ const metrics = [
   {label:"Mensajes hoy",value:"67",color:"#06b6d4",sub:"+12% vs ayer",icon:"\ud83d\udcac"},
   {label:"Amenidades libres",value:"5",color:"#a855f7",sub:"de 6 totales",icon:"\ud83c\udfca"},
 ];
-
 const agendaItems = [
-  {time:"9:00 AM",event:"Tecnico de ascensor",color:"#e67e22",status:"Confirmado"},
-  {time:"11:30 AM",event:"Reunion proveedor fumigacion",color:C.accentD,status:"Pendiente"},
-  {time:"2:00 PM",event:"Fumigacion pisos 1-5",color:C.accentD,status:"Notificado"},
-  {time:"6:00 PM",event:"Salon reservado - Apto 7A",color:"#8b5cf6",status:"Reservado"},
+  {time:"9:00 AM",event:"Tecnico de ascensor",color:"#e67e22"},
+  {time:"11:30 AM",event:"Reunion proveedor fumigacion",color:C.accentD},
+  {time:"2:00 PM",event:"Fumigacion pisos 1-5",color:C.accentD},
+  {time:"6:00 PM",event:"Salon reservado - Apto 7A",color:"#8b5cf6"},
 ];
-
 const recentTickets = [
   {id:"#127",title:"Filtracion bano apto 3B",priority:"Alta",time:"Hace 2h",avatar:"MR"},
   {id:"#126",title:"Luz pasillo piso 8",priority:"Media",time:"Hace 5h",avatar:"JL"},
   {id:"#125",title:"Ruido excesivo apto 11A",priority:"Baja",time:"Ayer",avatar:"CP"},
 ];
-
 const notifications = [
   {type:"broadcast",text:"Piscina cerrada por mantenimiento hasta manana 2pm",time:"Hace 1h",sent:"48 notificados"},
-  {type:"resolved",text:"Gimnasio reparado, ya esta abierto",time:"Hace 3h",sent:"Aviso automatico enviado"},
+  {type:"resolved",text:"Gimnasio reparado, ya esta abierto",time:"Hace 3h",sent:"Aviso automatico"},
   {type:"reminder",text:"Recordatorio de pago a 12 aptos",time:"Ayer",sent:"12 mensajes enviados"},
 ];
 
@@ -433,7 +559,6 @@ export default function QondoLanding() {
       <section style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",padding:"120px 24px 80px",background:"linear-gradient(180deg,"+C.bg+" 0%,"+C.bgWarm+" 100%)"}}>
         <div style={{maxWidth:1200,width:"100%",display:"flex",alignItems:"center",justifyContent:"space-between",gap:80,flexWrap:"wrap"}}>
           <div style={{flex:"1 1 500px",animation:hv?"fu 0.8s ease forwards":"none",opacity:hv?1:0}}>
-            {/* WhatsApp notification */}
             <div style={{display:"inline-flex",alignItems:"center",gap:10,padding:"10px 18px",borderRadius:14,background:"#fff",border:"1px solid "+C.surfD,boxShadow:"0 4px 16px rgba(0,0,0,0.06)",marginBottom:28}}>
               <div style={{width:36,height:36,borderRadius:10,background:"#25D366",display:"flex",alignItems:"center",justifyContent:"center"}}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.955 9.955 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
@@ -445,7 +570,6 @@ export default function QondoLanding() {
               </div>
               <div style={{fontSize:11,color:C.txD,alignSelf:"flex-start",marginLeft:8}}>ahora</div>
             </div>
-
             <h1 style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:"clamp(32px,5vw,56px)",fontWeight:700,lineHeight:1.08,color:C.tx,marginBottom:28,letterSpacing:"-0.03em"}}>
               <span style={{fontWeight:400,display:"block",fontSize:"clamp(22px,3.2vw,34px)",marginBottom:10}}>
                 <span style={{color:C.accentD}}>3am.</span>{" "}
@@ -454,12 +578,10 @@ export default function QondoLanding() {
               Ahora sabes que Don Carlos del 4B duerme en pijama de{" "}
               <span style={{color:C.accentD}}>Pikachu.</span>
             </h1>
-
             <p style={{fontSize:"clamp(16px,1.8vw,19px)",color:C.txM,lineHeight:1.6,maxWidth:520,marginBottom:40}}>
               Qondo te avisa que era falsa alarma sin salir de tu cama.{" "}
               <span style={{color:C.txD}}>Y el secreto de Don Carlos seguiria a salvo.</span>
             </p>
-
             <div style={{display:"flex",gap:16,flexWrap:"wrap"}}>
               <button style={{padding:"16px 36px",borderRadius:100,border:"none",background:C.accentD,color:"#fff",fontSize:16,fontWeight:600,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",boxShadow:"0 4px 20px rgba(5,150,105,0.25)"}}>
                 {"Cont\u00e1ctanos \u2192"}
@@ -487,7 +609,7 @@ export default function QondoLanding() {
         </div>
       </section>
 
-      <ProblemCards/>
+      <ProblemSection/>
       <Features/>
       <DemoSection/>
 
@@ -531,7 +653,6 @@ export default function QondoLanding() {
                   </div>
                 ))}
               </div>
-              {/* Responsive columns: stack on mobile */}
               <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:14}}>
                 <div style={{background:C.surf,borderRadius:12,padding:"14px 16px",border:"1px solid "+C.surfD}}>
                   <div style={{fontSize:13,fontWeight:600,color:C.tx,marginBottom:12}}>Agenda de hoy</div>
