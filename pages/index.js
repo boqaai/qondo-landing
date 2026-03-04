@@ -2,21 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import Head from "next/head";
 
 const C = {
-  bg: "#f7f5f0",
-  bgWarm: "#efeadf",
-  surf: "#f2efe8",
-  surfD: "#e8e3d8",
-  accent: "#34d399",
-  accentD: "#059669",
-  accentLight: "#ecfdf5",
-  tx: "#1a1814",
-  txM: "#5c5647",
-  txD: "#8a8377",
-  waBg: "#efeae2",
-  waIn: "#ffffff",
-  waOut: "#d9fdd3",
-  waH: "#008069",
-  waTime: "#667781",
+  bg: "#f7f5f0", bgWarm: "#efeadf", surf: "#f2efe8", surfD: "#e8e3d8",
+  accent: "#34d399", accentD: "#059669", accentLight: "#ecfdf5",
+  tx: "#1a1814", txM: "#5c5647", txD: "#8a8377",
+  waBg: "#efeae2", waIn: "#ffffff", waOut: "#d9fdd3", waH: "#008069", waTime: "#667781",
 };
 
 /* ─── SMALL COMPONENTS ─── */
@@ -50,6 +39,22 @@ const Bubble = ({text,time,out,bot,delay=0,children}) => {
           <span style={{fontSize:10.5,color:C.waTime}}>{time}</span>
           {out&&<svg width="16" height="11" viewBox="0 0 16 11" fill="none"><path d="M11.071 0.929L4.5 7.5L1.929 4.929" stroke="#53bdeb" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/><path d="M14.071 0.929L7.5 7.5L6.5 6.5" stroke="#53bdeb" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>}
         </div>
+      </div>
+    </div>
+  );
+};
+
+/* WhatsApp interactive buttons */
+const WAButtons = ({buttons,delay=0}) => {
+  const [vis,setVis] = useState(false);
+  useEffect(()=>{const t=setTimeout(()=>setVis(true),delay);return()=>clearTimeout(t)},[delay]);
+  if(!vis) return null;
+  return (
+    <div style={{display:"flex",justifyContent:"flex-start",marginBottom:4,animation:"bp 0.3s cubic-bezier(0.175,0.885,0.32,1.275)"}}>
+      <div style={{maxWidth:"82%",display:"flex",flexDirection:"column",gap:1}}>
+        {buttons.map((b,i)=>(
+          <div key={i} style={{background:C.waIn,padding:"8px 12px",borderRadius:i===0?"8px 8px 0 0":i===buttons.length-1?"0 0 8px 8px":"0",textAlign:"center",fontSize:13.5,color:"#008069",fontWeight:500,borderTop:i>0?"1px solid #e9e5de":"none",boxShadow:i===0?"0 1px 1px rgba(0,0,0,0.06)":"none"}}>{b}</div>
+        ))}
       </div>
     </div>
   );
@@ -100,6 +105,29 @@ const HoyBadge = () => (
   </div>
 );
 
+/* Photo placeholder in chat */
+const PhotoBubble = ({caption,time,out,delay=0}) => {
+  const [vis,setVis] = useState(false);
+  useEffect(()=>{const t=setTimeout(()=>setVis(true),delay);return()=>clearTimeout(t)},[delay]);
+  if(!vis) return null;
+  return (
+    <div style={{display:"flex",justifyContent:out?"flex-end":"flex-start",marginBottom:4,animation:"bp 0.3s cubic-bezier(0.175,0.885,0.32,1.275)"}}>
+      <div style={{maxWidth:"72%",background:out?C.waOut:C.waIn,borderRadius:out?"8px 8px 0 8px":"8px 8px 8px 0",overflow:"hidden",boxShadow:"0 1px 1px rgba(0,0,0,0.06)"}}>
+        <div style={{width:"100%",height:100,background:"linear-gradient(135deg,#d1d5db,#9ca3af)",display:"flex",alignItems:"center",justifyContent:"center"}}>
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+        </div>
+        <div style={{padding:"4px 8px 4px"}}>
+          {caption&&<div style={{fontSize:13,color:"#111b21",marginBottom:2}}>{caption}</div>}
+          <div style={{display:"flex",justifyContent:"flex-end",alignItems:"center",gap:3}}>
+            <span style={{fontSize:10.5,color:C.waTime}}>{time}</span>
+            {out&&<svg width="16" height="11" viewBox="0 0 16 11" fill="none"><path d="M11.071 0.929L4.5 7.5L1.929 4.929" stroke="#53bdeb" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/><path d="M14.071 0.929L7.5 7.5L6.5 6.5" stroke="#53bdeb" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 /* ─── HERO PHONE ─── */
 const HeroPhone = () => {
   const [phase, setPhase] = useState(0);
@@ -110,21 +138,19 @@ const HeroPhone = () => {
   },[]);
 
   if(phase < 2) return (
-    <div style={{width:310,borderRadius:20,overflow:"hidden",background:"linear-gradient(160deg,#0f172a 0%,#1e293b 50%,#0f172a 100%)",boxShadow:"0 8px 40px rgba(0,0,0,0.2), 0 2px 8px rgba(0,0,0,0.08)",border:"1px solid rgba(255,255,255,0.08)",flexShrink:0,animation:"fp 6s ease-in-out infinite"}}>
+    <div style={{width:310,borderRadius:20,overflow:"hidden",background:"linear-gradient(160deg,#0f172a 0%,#1e293b 50%,#0f172a 100%)",boxShadow:"0 8px 40px rgba(0,0,0,0.2)",border:"1px solid rgba(255,255,255,0.08)",flexShrink:0,animation:"fp 6s ease-in-out infinite"}}>
       <div style={{padding:"12px 20px 0",display:"flex",justifyContent:"space-between",alignItems:"center",fontSize:12,fontWeight:600,color:"#fff"}}>
         <span>3:02</span>
         <div style={{display:"flex",alignItems:"center",gap:4}}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
-          <div style={{width:22,height:11,borderRadius:2,border:"1.5px solid #fff",display:"flex",alignItems:"center",padding:1}}>
-            <div style={{height:"100%",width:"73%",borderRadius:1,background:"#fff"}}/>
-          </div>
+          <div style={{width:22,height:11,borderRadius:2,border:"1.5px solid #fff",display:"flex",alignItems:"center",padding:1}}><div style={{height:"100%",width:"73%",borderRadius:1,background:"#fff"}}/></div>
         </div>
       </div>
       <div style={{textAlign:"center",padding:"50px 0 10px"}}>
-        <div style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:64,fontWeight:300,color:"#fff",lineHeight:1,letterSpacing:"-0.02em"}}>3:02</div>
+        <div style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:64,fontWeight:300,color:"#fff",lineHeight:1}}>3:02</div>
         <div style={{fontSize:14,color:"rgba(255,255,255,0.5)",marginTop:6}}>martes, 4 de marzo</div>
       </div>
-      {phase >= 1 && (
+      {phase>=1&&(
         <div style={{padding:"20px 14px",animation:"bp 0.4s cubic-bezier(0.175,0.885,0.32,1.275)"}}>
           <div style={{background:"rgba(255,255,255,0.12)",backdropFilter:"blur(20px)",borderRadius:16,padding:"12px 14px",display:"flex",gap:10,alignItems:"flex-start"}}>
             <div style={{width:36,height:36,borderRadius:10,background:"#25D366",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
@@ -136,36 +162,26 @@ const HeroPhone = () => {
                 <span style={{fontSize:11,color:"rgba(255,255,255,0.5)"}}>ahora</span>
               </div>
               <div style={{fontSize:13,fontWeight:600,color:"#fff",marginBottom:1}}>Torre Palma Dorada</div>
-              <div style={{fontSize:12.5,color:"rgba(255,255,255,0.8)",lineHeight:1.4}}>
-                Qondo: Se activo la alarma en el edificio. Estamos verificando con operaciones...
-              </div>
+              <div style={{fontSize:12.5,color:"rgba(255,255,255,0.8)",lineHeight:1.4}}>Qondo: Se activo la alarma en el edificio. Estamos verificando...</div>
             </div>
           </div>
         </div>
       )}
-      <div style={{padding:"60px 0 16px",display:"flex",justifyContent:"center"}}>
-        <div style={{width:120,height:4,borderRadius:2,background:"rgba(255,255,255,0.3)"}}/>
-      </div>
+      <div style={{padding:"60px 0 16px",display:"flex",justifyContent:"center"}}><div style={{width:120,height:4,borderRadius:2,background:"rgba(255,255,255,0.3)"}}/></div>
     </div>
   );
 
   return (
-    <div style={{width:310,borderRadius:20,overflow:"hidden",background:C.waBg,boxShadow:"0 8px 40px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)",border:"1px solid rgba(0,0,0,0.08)",flexShrink:0,animation:"fp 6s ease-in-out infinite"}}>
+    <div style={{width:310,borderRadius:20,overflow:"hidden",background:C.waBg,boxShadow:"0 8px 40px rgba(0,0,0,0.12)",border:"1px solid rgba(0,0,0,0.08)",flexShrink:0,animation:"fp 6s ease-in-out infinite"}}>
       <StatusBar battery={73} time="3:02"/>
       <WAHeader/>
       <div style={{padding:"10px 10px",minHeight:340,display:"flex",flexDirection:"column",background:C.waBg}}>
         <HoyBadge/>
-        <Bubble time="3:02 a.m." bot={true} out={false} delay={400}>
-          <div>Se activo la alarma de incendios en el edificio. Estamos verificando con Carlos de operaciones. Les informamos en breve.</div>
-        </Bubble>
+        <Bubble time="3:02 a.m." bot={true} out={false} delay={400}><div>Se activo la alarma de incendios en el edificio. Estamos verificando con Carlos de operaciones. Les informamos en breve.</div></Bubble>
         <Bubble text="Es real? Que hago??" time="3:02 a.m." out={true} delay={2200}/>
-        <Bubble time="3:03 a.m." bot={true} out={false} delay={3800}>
-          <div>Maria, Carlos confirma: <strong>falsa alarma</strong>. Fue una prueba del sistema de humo en el piso 6. No es necesario evacuar.</div>
-        </Bubble>
+        <Bubble time="3:03 a.m." bot={true} out={false} delay={3800}><div>Maria, Carlos confirma: <strong>falsa alarma</strong>. Fue una prueba del sistema de humo en el piso 6. No es necesario evacuar.</div></Bubble>
         <Bubble text="Uff que alivio, gracias!" time="3:04 a.m." out={true} delay={5600}/>
-        <Bubble time="3:04 a.m." bot={true} out={false} delay={7000}>
-          <div>De nada, Maria! Te puedo ayudar en algo mas?</div>
-        </Bubble>
+        <Bubble time="3:04 a.m." bot={true} out={false} delay={7000}><div>De nada, Maria! Nos avisan si necesitan algo mas.</div></Bubble>
       </div>
     </div>
   );
@@ -175,83 +191,60 @@ const HeroPhone = () => {
 const problemCards = [
   {
     problem: "Manana fumigan y te enteraste hoy por un papel en el ascensor que nadie lee.",
-    emoji: "\ud83e\uddf9",
-    color: "#fef2f2",
-    border: "#fecaca",
+    emoji: "\ud83e\uddf9", color: "#fef2f2", border: "#fecaca",
     messages: [
-      {text:"Hola Laura! Te informamos que este viernes 7 se realizara la fumigacion en tu piso (4to).\n\nHorario: 9:00 AM - 11:00 AM\nSe recomienda cerrar ventanas y guardar alimentos.\n\nTe avisamos cuando terminen!",out:false,time:"Lun 3:15 p.m.",bot:true},
+      {text:"Hola Laura! Les informamos que este viernes 7 se realizara la fumigacion en tu piso (4to).\n\nHorario: 9:00 AM - 11:00 AM\nSe recomienda cerrar ventanas y guardar alimentos.\n\nLes avisamos cuando terminen!",out:false,time:"Lun 3:15 p.m.",bot:true},
       {text:"Gracias por avisar!",out:true,time:"Lun 3:20 p.m."},
       {text:"Laura, la fumigacion del piso 4 comienza en 30 minutos. Recuerda cerrar ventanas!",out:false,time:"Vie 8:30 a.m.",bot:true},
       {text:"Lista, ya cerre todo!",out:true,time:"Vie 8:33 a.m."},
-    ],
-    waTime: "8:33",
+    ], waTime: "8:33",
   },
   {
     problem: "Alguien se estaciono en tu puesto. No sabes de quien es. El guardia tampoco.",
-    emoji: "\ud83d\ude97",
-    color: "#fff7ed",
-    border: "#fed7aa",
+    emoji: "\ud83d\ude97", color: "#fff7ed", border: "#fed7aa",
     messages: [
-      {text:"Hay un carro en mi puesto! Placa ABC-123",out:true,time:"7:45 a.m."},
-      {text:"Revisando... Esa placa corresponde a un visitante del apto 9B (familia Rodriguez).\n\nYa le envie un mensaje al residente para que lo mueva. Te aviso cuando este libre.",out:false,time:"7:45 a.m.",bot:true},
-      {text:"El apto 9B confirma que lo mueve en 5 minutos. Disculpa la molestia!",out:false,time:"7:48 a.m.",bot:true},
-      {text:"Perfecto gracias!",out:true,time:"7:49 a.m."},
-    ],
-    waTime: "7:49",
+      {text:"Hay un carro en mi puesto otra vez! Placa ABC-123",out:true,time:"7:45 a.m."},
+      {text:"Recibimos tu reporte. Esa placa corresponde a un visitante del apto 9B (familia Rodriguez). Ya les enviamos un mensaje para que lo mueva. Te avisamos cuando este libre.",out:false,time:"7:45 a.m.",bot:true},
+      {text:"El apto 9B nos confirma que lo mueve en 5 minutos. Disculpa la molestia!",out:false,time:"7:48 a.m.",bot:true},
+    ], waTime: "7:48",
   },
   {
     problem: "Te llego un paquete hace 3 dias. Nadie te dijo.",
-    emoji: "\ud83d\udce6",
-    color: "#fef9c3",
-    border: "#fde68a",
+    emoji: "\ud83d\udce6", color: "#fef9c3", border: "#fde68a",
     messages: [
-      {text:"Hola Daniel! Llego un paquete a tu nombre. Lo recibio Jose en porteria a las 2:14pm.",out:false,time:"2:18 p.m.",bot:true},
-      {text:"Remitente: Amazon\nTracking: 1Z999AA1234567\n\nPuedes recogerlo en recepcion.",out:false,time:"2:18 p.m.",bot:true},
+      {text:"Hola Daniel! Llego un paquete a tu nombre. Lo recibio Jose en porteria a las 2:14pm.\n\nRemitente: Amazon\nTracking: 1Z999AA1234567\n\nPuedes recogerlo en recepcion.",out:false,time:"2:18 p.m.",bot:true},
       {text:"Genial ya bajo!",out:true,time:"2:25 p.m."},
-    ],
-    waTime: "2:25",
+    ], waTime: "2:25",
   },
   {
     problem: "Le escribiste al admin el martes. Hoy es viernes. Silencio.",
-    emoji: "\ud83e\uddd1\u200d\ud83d\udcbb",
-    color: "#f0f4ff",
-    border: "#bfdbfe",
+    emoji: "\ud83e\uddd1\u200d\ud83d\udcbb", color: "#f0f4ff", border: "#bfdbfe",
     messages: [
       {text:"Hola, hay una gotera en mi bano desde ayer",out:true,time:"8:10 a.m."},
-      {text:"Listo, Carlos! Cree el ticket #134 para tu gotera.\n\nPrioridad: Alta\nMantenimiento lo revisa hoy antes de las 2pm.\n\nTe aviso cuando lo asignen.",out:false,time:"8:10 a.m.",bot:true},
+      {text:"Listo, Carlos! Creamos el ticket #134 para tu gotera.\n\nPrioridad: Alta\nMantenimiento lo revisa hoy antes de las 2pm.\n\nTe avisamos cuando lo asignen.",out:false,time:"8:10 a.m.",bot:true},
       {text:"Ticket #134: El plomero Juan confirma visita hoy a la 1pm. Necesita acceso al bano principal. Estaras en casa?",out:false,time:"10:22 a.m.",bot:true},
       {text:"Si, aqui estoy!",out:true,time:"10:30 a.m."},
-    ],
-    waTime: "10:30",
+    ], waTime: "10:30",
   },
   {
     problem: "Querias reservar la parrilla pero el formulario tiene 15 campos.",
-    emoji: "\ud83c\udf56",
-    color: "#f0fdf4",
-    border: "#bbf7d0",
+    emoji: "\ud83c\udf56", color: "#f0fdf4", border: "#bbf7d0",
     messages: [
       {text:"Quiero la parrilla el sabado",out:true,time:"6:15 p.m."},
       {text:"Hola Roberto! La parrilla esta disponible este sabado. Cuantas personas y de que hora a que hora?",out:false,time:"6:15 p.m.",bot:true},
       {text:"Somos 8, de 12 a 6",out:true,time:"6:16 p.m."},
-      {text:"Reservado!\n\nParrilla\nSabado 8 marzo, 12pm - 6pm\nApto 2A - 8 personas\n\nRecuerda dejar el area limpia al terminar. Que la disfruten!",out:false,time:"6:16 p.m.",bot:true},
-    ],
-    waTime: "6:16",
+      {text:"Reservado!\n\nParrilla - Sabado 8 marzo\n12pm - 6pm, 8 personas\n\nRecuerda dejar el area limpia al terminar. Que la disfruten!",out:false,time:"6:16 p.m.",bot:true},
+    ], waTime: "6:16",
   },
 ];
 
-const ProblemCard = ({card, index}) => {
+const ProblemCard = ({card}) => {
   const [flipped, setFlipped] = useState(false);
   const [animKey, setAnimKey] = useState(0);
-
-  const flip = () => {
-    setFlipped(!flipped);
-    setAnimKey(k=>k+1);
-  };
-
+  const flip = () => { setFlipped(!flipped); setAnimKey(k=>k+1); };
   return (
     <div style={{minWidth:320,maxWidth:320,scrollSnapAlign:"center",flexShrink:0,cursor:"pointer",perspective:"1000px"}} onClick={flip}>
       <div style={{position:"relative",minHeight:420,transition:"transform 0.6s cubic-bezier(0.4,0,0.2,1)",transformStyle:"preserve-3d",transform:flipped?"rotateY(180deg)":"rotateY(0)"}}>
-        {/* FRONT - Problem */}
         <div style={{position:"absolute",inset:0,backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",borderRadius:20,padding:32,background:card.color,border:"2px solid "+card.border,display:"flex",flexDirection:"column",justifyContent:"space-between"}}>
           <div>
             <div style={{fontSize:48,marginBottom:20}}>{card.emoji}</div>
@@ -259,20 +252,15 @@ const ProblemCard = ({card, index}) => {
           </div>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:24}}>
             <span style={{fontSize:12,color:C.txD,fontWeight:500}}>SIN QONDO</span>
-            <div style={{display:"flex",alignItems:"center",gap:6,padding:"8px 16px",borderRadius:100,background:"rgba(0,0,0,0.06)",fontSize:13,color:C.txM,fontWeight:500}}>
-              Toca para ver la solucion {"\u2192"}
-            </div>
+            <div style={{padding:"8px 16px",borderRadius:100,background:"rgba(0,0,0,0.06)",fontSize:13,color:C.txM,fontWeight:500}}>{"Ver solucion \u2192"}</div>
           </div>
         </div>
-        {/* BACK - WhatsApp solution */}
         <div style={{position:"absolute",inset:0,backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",transform:"rotateY(180deg)",borderRadius:20,overflow:"hidden",background:C.waBg,border:"2px solid "+C.accent,boxShadow:"0 4px 20px rgba(5,150,105,0.15)"}}>
           <MiniStatusBar time={card.waTime}/>
           <WAHeader/>
           <div key={animKey} style={{padding:"8px 8px",display:"flex",flexDirection:"column",background:C.waBg}}>
             <HoyBadge/>
-            {card.messages.map((m,i)=>(
-              <Bubble key={animKey+"-"+i} text={m.text} time={m.time} out={m.out} bot={m.bot} delay={flipped? i*600+200 : 0}/>
-            ))}
+            {card.messages.map((m,i)=>(<Bubble key={animKey+"-"+i} text={m.text} time={m.time} out={m.out} bot={m.bot} delay={flipped?i*600+200:0}/>))}
           </div>
           <div style={{padding:"8px 12px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
             <span style={{fontSize:11,color:C.accentD,fontWeight:600}}>CON QONDO</span>
@@ -287,42 +275,21 @@ const ProblemCard = ({card, index}) => {
 const ProblemSection = () => {
   const scrollRef = useRef(null);
   const [current, setCurrent] = useState(0);
-
-  const scroll = (dir) => {
-    if(!scrollRef.current) return;
-    const w = 340;
-    scrollRef.current.scrollBy({left:dir*w,behavior:"smooth"});
-  };
-
-  const handleScroll = () => {
-    if(!scrollRef.current) return;
-    const idx = Math.round(scrollRef.current.scrollLeft / 340);
-    setCurrent(idx);
-  };
-
+  const handleScroll = () => { if(scrollRef.current) setCurrent(Math.round(scrollRef.current.scrollLeft/340)); };
   return (
     <section style={{padding:"100px 0",background:C.bg,overflow:"hidden"}}>
       <div style={{maxWidth:1100,margin:"0 auto",padding:"0 24px"}}>
         <div style={{textAlign:"center",marginBottom:48}}>
-          <h2 style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:"clamp(28px,4vw,44px)",fontWeight:700,color:C.tx,marginBottom:16,lineHeight:1.2}}>
-            {"Esto pasa todos los dias \ud83d\ude44"}
-          </h2>
-          <p style={{fontSize:17,color:C.txM,maxWidth:480,margin:"0 auto",lineHeight:1.6}}>
-            Toca cada tarjeta para ver como Qondo lo resuelve por WhatsApp.
-          </p>
+          <h2 style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:"clamp(28px,4vw,44px)",fontWeight:700,color:C.tx,marginBottom:16,lineHeight:1.2}}>{"Esto pasa todos los dias \ud83d\ude44"}</h2>
+          <p style={{fontSize:17,color:C.txM,maxWidth:480,margin:"0 auto",lineHeight:1.6}}>Toca cada tarjeta para ver como Qondo lo resuelve por WhatsApp.</p>
         </div>
       </div>
       <div style={{position:"relative"}}>
-        <div ref={scrollRef} onScroll={handleScroll} style={{display:"flex",gap:20,overflowX:"auto",scrollSnapType:"x mandatory",padding:"0 calc(50% - 160px) 20px",WebkitOverflowScrolling:"touch",msOverflowStyle:"none",scrollbarWidth:"none"}}>
-          {problemCards.map((card,i)=>(
-            <ProblemCard key={i} card={card} index={i}/>
-          ))}
+        <div ref={scrollRef} onScroll={handleScroll} style={{display:"flex",gap:20,overflowX:"auto",scrollSnapType:"x mandatory",padding:"0 calc(50% - 160px) 20px",WebkitOverflowScrolling:"touch",scrollbarWidth:"none"}}>
+          {problemCards.map((card,i)=>(<ProblemCard key={i} card={card}/>))}
         </div>
-        {/* Dots */}
         <div style={{display:"flex",justifyContent:"center",gap:8,marginTop:12}}>
-          {problemCards.map((_,i)=>(
-            <div key={i} style={{width:current===i?24:8,height:8,borderRadius:4,background:current===i?C.accentD:C.surfD,transition:"all 0.3s"}}/>
-          ))}
+          {problemCards.map((_,i)=>(<div key={i} style={{width:current===i?24:8,height:8,borderRadius:4,background:current===i?C.accentD:C.surfD,transition:"all 0.3s"}}/>))}
         </div>
       </div>
     </section>
@@ -332,51 +299,66 @@ const ProblemSection = () => {
 /* ─── FEATURES ─── */
 const convos = {
   reglamento: {
-    sb: {battery:12,lowBat:true,speaker:true,bluetooth:true,time:"9:14"},
-    headerName: "Torr Palma Dorad",
-    messages: [
-      {text:"asta que ora puedo aser ruido? tengo visita",out:true,time:"9:14 p.m."},
-      {text:"Hola Pedro! Segun el reglamento, el horario de silencio empieza a las 10:00 PM. Despues de esa hora se pide mantener el volumen bajo.\n\nQuieres que te envie la seccion completa de ruido y convivencia?",out:false,time:"9:14 p.m.",bot:true},
+    sb:{battery:12,lowBat:true,speaker:true,bluetooth:true,time:"9:14"},
+    headerName:"Torre Palma Dorada",
+    messages:[
+      {text:"asta que hora puedo hacer ruido? tengo visita",out:true,time:"9:14 p.m."},
+      {text:"Hola Pedro! Segun el reglamento, el horario de silencio comienza a las 10:00 PM. Despues de esa hora les pedimos mantener el volumen bajo.\n\nSi quieres te compartimos la seccion completa de ruido y convivencia.",out:false,time:"9:14 p.m.",bot:true},
     ]
   },
   reservas: {
-    sb: {battery:54,time:"2:30"},
-    messages: [
+    sb:{battery:54,time:"2:30"},
+    messages:[
       {text:"Hola quiero reservar el salon de fiestas",out:true,time:"2:30 p.m."},
-      {text:"Hola Ana! Con gusto te ayudo. Para que fecha lo necesitas?",out:false,time:"2:30 p.m.",bot:true},
-      {text:"Para el sabado que viene",out:true,time:"2:31 p.m."},
-      {text:"Perfecto, cuantas personas tienes en la lista y que estan celebrando?",out:false,time:"2:31 p.m.",bot:true},
-      {text:"Es el cumple de mi hija, unas 25 personas. De 6 a 11pm",out:true,time:"2:32 p.m."},
-      {text:"El salon esta libre en ese horario!\n\nReservado:\nSalon de fiestas\nSabado 15 marzo, 6pm - 11pm\nApto 7A - Cumpleanos\n~25 personas\n\nTe envio las reglas de uso? Y que la pasen increible!",out:false,time:"2:32 p.m.",bot:true},
+      {text:"Hola Ana! Con gusto. Para que fecha lo necesitas?",out:false,time:"2:30 p.m.",bot:true},
+      {text:"El sabado que viene, es el cumple de mi hija",out:true,time:"2:31 p.m."},
+      {text:"Que lindo! Cuantas personas y en que horario?",out:false,time:"2:31 p.m.",bot:true},
+      {text:"Unas 25 personas. De 6 a 11pm",out:true,time:"2:32 p.m."},
+      {text:"El salon esta disponible! Para confirmar necesitamos un deposito de $50, que se reembolsa una vez verificamos que el area quede en orden.\n\nTe enviamos los requisitos del salon por correo?",out:false,time:"2:32 p.m.",bot:true},
+      {text:"Si por favor!",out:true,time:"2:33 p.m."},
+      {text:null,out:false,time:"2:33 p.m.",bot:true,isVendors:true},
     ]
   },
   votaciones: {
-    sb: {battery:88,time:"7:00"},
-    messages: [
-      {text:"Hola Gabriel! Hay una votacion abierta y nos encantaria contar con tu opinion:\n\nRenovar sistema de camaras de seguridad\nCosto: $2,500 por apto (cuota unica)\nCierra: Viernes 21 de marzo\n23 de 50 aptos han votado\n\n1 A favor\n2 En contra\n3 Necesito mas informacion",out:false,time:"7:00 p.m.",bot:true},
-      {text:"3",out:true,time:"7:12 p.m."},
-      {text:"Claro! Hay dos propuestas:\n\nOpcion A: Hikvision, 12 camaras HD, grabacion 30 dias - $2,500/apto\nOpcion B: Dahua, 8 camaras 4K, grabacion 15 dias - $1,800/apto\n\nAqui puedes ver las cotizaciones: bit.ly/camaras-tpd\n\nCuando te decidas, me avisas!",out:false,time:"7:12 p.m.",bot:true},
+    sb:{battery:88,time:"7:00"},
+    messages:[
+      {text:null,out:false,time:"7:00 p.m.",bot:true,isVoteAnnounce:true},
+      {text:null,out:false,time:"7:00 p.m.",isVoteButtons:true},
+      {text:"cuanto sale?",out:true,time:"7:12 p.m."},
+      {text:"Son $2,500 por apartamento, cuota unica. Hay dos opciones de proveedor con diferentes precios. Te las compartimos?",out:false,time:"7:12 p.m.",bot:true},
+      {text:"dale, a favor",out:true,time:"7:15 p.m."},
+      {text:"Registrado! Van 24 de 50 votos. Gracias por participar, Gabriel.",out:false,time:"7:15 p.m.",bot:true},
     ]
   },
   paquetes: {
-    sb: {battery:91,time:"12:15"},
-    messages: [
+    sb:{battery:91,time:"12:15"},
+    messages:[
       {text:"Hola Sofia! Llego un paquete a tu nombre a recepcion. Lo recibio Jose en porteria a las 11:38am.",out:false,time:"11:42 a.m.",bot:true},
       {text:null,out:false,time:"11:42 a.m.",bot:true,isLabel:true},
       {text:"Ahh estoy de vacaciones! Regreso el martes",out:true,time:"12:15 p.m."},
-      {text:"Entendido! Quieres que lo guardemos en el deposito hasta el martes? Queda seguro ahi.\n\nY si llega algo mas de aqui al martes, lo guardamos directamente. Te parece?",out:false,time:"12:15 p.m.",bot:true},
+      {text:"Entendido! Quieres que lo guardemos en el deposito hasta el martes? Queda seguro ahi.\n\nSi llega algo mas de aqui al martes, lo guardamos directamente. Te parece?",out:false,time:"12:15 p.m.",bot:true},
       {text:"Perfecto, muchas gracias!",out:true,time:"12:16 p.m."},
-      {text:"Listo! Cuando regreses me escribes y te digo todo lo que te llego. Disfruta las vacaciones!",out:false,time:"12:16 p.m.",bot:true},
+      {text:"Listo! Cuando regreses nos escribes y te decimos todo lo que llego. Disfruta las vacaciones!",out:false,time:"12:16 p.m.",bot:true},
+    ]
+  },
+  reportes: {
+    sb:{battery:45,time:"7:45"},
+    messages:[
+      {text:null,out:true,time:"7:45 a.m.",isPhoto:true,photoCaption:"Este carro esta en mi puesto OTRA VEZ"},
+      {text:"Recibimos tu reporte con la foto. La placa corresponde a un visitante del apto 9B (familia Rodriguez). Ya les enviamos un mensaje para que lo mueva.\n\nTe avisamos cuando este libre.",out:false,time:"7:46 a.m.",bot:true},
+      {text:"El apto 9B nos confirma que baja a moverlo en 5 minutos. Disculpa la molestia!",out:false,time:"7:49 a.m.",bot:true},
+      {text:"Gracias!! Ya era la tercera vez",out:true,time:"7:50 a.m."},
+      {text:"Lo tenemos registrado. Si vuelve a pasar nos escribes y lo escalamos directamente a administracion.",out:false,time:"7:50 a.m.",bot:true},
     ]
   },
   comunidad: {
-    sb: {battery:67,time:"5:22"},
-    messages: [
-      {text:"Torneo de natacion del edificio!\n\nSabado 22 de marzo, 10am\nPiscina principal\n\nCategorias: ninos (6-12) y adultos\nPremios: trofeos + dia gratis de parrillera\n\n1 Quiero participar\n2 Solo quiero ir a ver",out:false,time:"5:00 p.m.",bot:true},
+    sb:{battery:67,time:"5:22"},
+    messages:[
+      {text:"Torneo de padel del edificio!\n\nSabado 22 de marzo, 10am\nCancha nivel 2\n\nCategorias: principiantes y avanzados\nPremios: trofeos + dia gratis de parrillera\n\n1 Quiero participar\n2 Solo voy a ver",out:false,time:"5:00 p.m.",bot:true},
       {text:"1! Quiero participar",out:true,time:"5:22 p.m."},
-      {text:"Genial! Para inscribirte necesito:\n\nCategoria: adultos o ninos?\nSi es ninos, nombre y edad del participante\nCuantas personas vas a inscribir?",out:false,time:"5:22 p.m.",bot:true},
-      {text:"Adultos, solo yo",out:true,time:"5:23 p.m."},
-      {text:"Listo, inscrito en categoria adultos! Participante #8.\n\nDato: la vecina del 3A organiza una practica el jueves a las 6pm. Te aviso?",out:false,time:"5:23 p.m.",bot:true},
+      {text:"Genial, Luis! Categoria principiantes o avanzados?",out:false,time:"5:22 p.m.",bot:true},
+      {text:"Principiante jaja recien empiezo",out:true,time:"5:23 p.m."},
+      {text:"Inscrito en principiantes! Participante #8.\n\nPor cierto, Maria del 5A reporto que se le perdio su gato gris con collar azul. Si lo ves por ahi nos avisas!",out:false,time:"5:23 p.m.",bot:true},
     ]
   },
 };
@@ -386,9 +368,11 @@ const tabList = [
   {id:"reservas",icon:"\ud83c\udf89",label:"Reservas",who:"Ana, la mama organizada"},
   {id:"votaciones",icon:"\ud83d\uddf3\ufe0f",label:"Votaciones",who:"Gabriel, el que nunca participa"},
   {id:"paquetes",icon:"\ud83d\udce6",label:"Paquetes",who:"Sofia, la compradora online"},
-  {id:"comunidad",icon:"\ud83c\udfca",label:"Comunidad",who:"Luis, el vecino entusiasta"},
+  {id:"reportes",icon:"\ud83d\udcf8",label:"Reportes",who:"Diego, el que madruga"},
+  {id:"comunidad",icon:"\ud83c\udfd3",label:"Comunidad",who:"Luis, el vecino entusiasta"},
 ];
 
+/* Custom rendered messages */
 const PackageLabel = () => (
   <div style={{display:"flex",justifyContent:"flex-start",marginBottom:4,animation:"bp 0.3s cubic-bezier(0.175,0.885,0.32,1.275)"}}>
     <div style={{maxWidth:"82%",borderRadius:8,overflow:"hidden",background:"#fff",border:"1px solid #e0dbd2",boxShadow:"0 1px 2px rgba(0,0,0,0.06)"}}>
@@ -406,6 +390,52 @@ const PackageLabel = () => (
   </div>
 );
 
+const VendorMessage = ({delay=0}) => {
+  const [vis,setVis] = useState(false);
+  const [typ,setTyp] = useState(false);
+  useEffect(()=>{
+    const t1=setTimeout(()=>setTyp(true),Math.max(0,delay-800));
+    const t2=setTimeout(()=>{setTyp(false);setVis(true)},delay);
+    return()=>{clearTimeout(t1);clearTimeout(t2)};
+  },[delay]);
+  if(typ&&!vis) return <div style={{display:"flex",justifyContent:"flex-start",marginBottom:4}}><TypingDots/></div>;
+  if(!vis) return null;
+  return (
+    <div style={{display:"flex",justifyContent:"flex-start",marginBottom:4,animation:"bp 0.3s cubic-bezier(0.175,0.885,0.32,1.275)"}}>
+      <div style={{maxWidth:"82%",padding:"6px 8px 4px",background:C.waIn,borderRadius:"8px 8px 8px 0",color:"#111b21",fontSize:13.5,lineHeight:1.4,boxShadow:"0 1px 1px rgba(0,0,0,0.06)"}}>
+        <div style={{fontSize:11.5,color:C.accentD,fontWeight:600,marginBottom:1}}>Qondo</div>
+        <span style={{whiteSpace:"pre-wrap"}}>{"Listo, te los enviamos al correo!\n\nPor cierto, algunos vecinos ofrecen servicios para eventos:\n\n\ud83c\udf55 Familia Lopez 3B - Pizzas artesanales\n\ud83e\uddc1 Do\u00f1a Carmen 6A - Postres hondure\u00f1os\n\ud83c\udf2e Los Hernandez 8B - Tacos y fajitas\n\nQuieres que te conectemos con alguno?"}</span>
+        <div style={{display:"flex",justifyContent:"flex-end",alignItems:"center",gap:3,marginTop:1}}>
+          <span style={{fontSize:10.5,color:C.waTime}}>2:33 p.m.</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const VoteAnnounce = ({delay=0}) => {
+  const [vis,setVis] = useState(false);
+  const [typ,setTyp] = useState(false);
+  useEffect(()=>{
+    const t1=setTimeout(()=>setTyp(true),Math.max(0,delay-800));
+    const t2=setTimeout(()=>{setTyp(false);setVis(true)},delay);
+    return()=>{clearTimeout(t1);clearTimeout(t2)};
+  },[delay]);
+  if(typ&&!vis) return <div style={{display:"flex",justifyContent:"flex-start",marginBottom:4}}><TypingDots/></div>;
+  if(!vis) return null;
+  return (
+    <div style={{display:"flex",justifyContent:"flex-start",marginBottom:4,animation:"bp 0.3s cubic-bezier(0.175,0.885,0.32,1.275)"}}>
+      <div style={{maxWidth:"82%",padding:"6px 8px 4px",background:C.waIn,borderRadius:"8px 8px 8px 0",color:"#111b21",fontSize:13.5,lineHeight:1.4,boxShadow:"0 1px 1px rgba(0,0,0,0.06)"}}>
+        <div style={{fontSize:11.5,color:C.accentD,fontWeight:600,marginBottom:1}}>Qondo</div>
+        <span style={{whiteSpace:"pre-wrap"}}>{"Hola Gabriel! Se abrio una votacion:\n\nRenovar sistema de camaras de seguridad\nTienes hasta el viernes 21 de marzo para votar.\n23 de 50 aptos ya votaron.\n\nSi tienes preguntas o quieres ver la propuesta, nos dices y te la compartimos."}</span>
+        <div style={{display:"flex",justifyContent:"flex-end",alignItems:"center",gap:3,marginTop:1}}>
+          <span style={{fontSize:10.5,color:C.waTime}}>7:00 p.m.</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Features = () => {
   const [tab,setTab] = useState("reglamento");
   const [k,setK] = useState(0);
@@ -421,7 +451,7 @@ const Features = () => {
             Todo por <span style={{color:C.accentD}}>WhatsApp.</span>
           </h2>
           <p style={{fontSize:18,color:C.txM,maxWidth:540,margin:"0 auto",lineHeight:1.6}}>
-            Tus residentes no necesitan bajar otra app. Solo abrir WhatsApp como hacen 80 veces al dia.
+            Sin descargar nada. Sin crear cuentas. Sin tutoriales. Solo WhatsApp.
           </p>
         </div>
         <div style={{textAlign:"center",marginBottom:14}}>
@@ -445,14 +475,19 @@ const Features = () => {
         <div style={{textAlign:"center",marginBottom:32}}>
           <span style={{fontSize:12,color:C.txD}}>{currentTab.who}</span>
         </div>
-        <div style={{maxWidth:340,margin:"0 auto",borderRadius:20,overflow:"hidden",background:C.waBg,boxShadow:"0 8px 40px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.05)",border:"1px solid rgba(0,0,0,0.08)"}}>
+        <div style={{maxWidth:340,margin:"0 auto",borderRadius:20,overflow:"hidden",background:C.waBg,boxShadow:"0 8px 40px rgba(0,0,0,0.1)",border:"1px solid rgba(0,0,0,0.08)"}}>
           <StatusBar battery={sb.battery||73} lowBat={sb.lowBat} speaker={sb.speaker} bluetooth={sb.bluetooth} time={sb.time||"10:13"}/>
           <WAHeader name={data.headerName||"Torre Palma Dorada"}/>
           <div key={k} style={{padding:"10px 10px",minHeight:280,display:"flex",flexDirection:"column",background:C.waBg}}>
             <HoyBadge/>
             {msgs.map((m,i)=>{
+              const d = i*900+300;
               if(m.isLabel) return <PackageLabel key={k+"-"+i}/>;
-              return <Bubble key={k+"-"+i} text={m.text} time={m.time} out={m.out} bot={m.bot} delay={i*900+300}/>;
+              if(m.isVendors) return <VendorMessage key={k+"-"+i} delay={d}/>;
+              if(m.isVoteAnnounce) return <VoteAnnounce key={k+"-"+i} delay={d}/>;
+              if(m.isVoteButtons) return <WAButtons key={k+"-"+i} buttons={["\u2705 A favor","\u274c En contra"]} delay={d}/>;
+              if(m.isPhoto) return <PhotoBubble key={k+"-"+i} caption={m.photoCaption} time={m.time} out={m.out} delay={d}/>;
+              return <Bubble key={k+"-"+i} text={m.text} time={m.time} out={m.out} bot={m.bot} delay={d}/>;
             })}
           </div>
         </div>
@@ -465,12 +500,8 @@ const Features = () => {
 const DemoSection = () => (
   <section style={{padding:"100px 24px",background:C.bg}}>
     <div style={{maxWidth:800,margin:"0 auto",textAlign:"center"}}>
-      <h2 style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:"clamp(26px,4vw,40px)",fontWeight:700,color:C.tx,marginBottom:16,lineHeight:1.2}}>
-        {"Pruebalo tu mismo \ud83d\udcf1"}
-      </h2>
-      <p style={{fontSize:17,color:C.txM,maxWidth:500,margin:"0 auto 40px",lineHeight:1.6}}>
-        Escanea el QR o escribe al numero y conversa con Qondo como si fueras residente de un edificio de prueba.
-      </p>
+      <h2 style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:"clamp(26px,4vw,40px)",fontWeight:700,color:C.tx,marginBottom:16,lineHeight:1.2}}>{"Pruebalo tu mismo \ud83d\udcf1"}</h2>
+      <p style={{fontSize:17,color:C.txM,maxWidth:500,margin:"0 auto 40px",lineHeight:1.6}}>Escanea el QR o escribe al numero y conversa con Qondo como si fueras residente de un edificio de prueba.</p>
       <div style={{display:"inline-flex",flexDirection:"column",alignItems:"center",gap:20,padding:"40px 48px",background:"#fff",borderRadius:24,border:"1px solid "+C.surfD,boxShadow:"0 4px 24px rgba(0,0,0,0.06)"}}>
         <div style={{width:180,height:180,borderRadius:16,background:C.surf,border:"1px solid "+C.surfD,display:"flex",alignItems:"center",justifyContent:"center"}}>
           <div style={{textAlign:"center",color:C.txD}}>
@@ -513,7 +544,7 @@ const recentTickets = [
   {id:"#126",title:"Luz pasillo piso 8",priority:"Media",time:"Hace 5h",avatar:"JL"},
   {id:"#125",title:"Ruido excesivo apto 11A",priority:"Baja",time:"Ayer",avatar:"CP"},
 ];
-const notifications = [
+const notifs = [
   {type:"broadcast",text:"Piscina cerrada por mantenimiento hasta manana 2pm",time:"Hace 1h",sent:"48 notificados"},
   {type:"resolved",text:"Gimnasio reparado, ya esta abierto",time:"Hace 3h",sent:"Aviso automatico"},
   {type:"reminder",text:"Recordatorio de pago a 12 aptos",time:"Ayer",sent:"12 mensajes enviados"},
@@ -523,12 +554,11 @@ const notifications = [
 export default function QondoLanding() {
   const [hv,setHv] = useState(false);
   useEffect(()=>{setTimeout(()=>setHv(true),200)},[]);
-
   return (
     <div style={{background:C.bg,minHeight:"100vh",fontFamily:"'DM Sans',-apple-system,sans-serif",color:C.tx,overflowX:"hidden"}}>
       <Head>
         <title>Qondo - Gestion de edificios por WhatsApp</title>
-        <meta name="description" content="Qondo conecta tu edificio por WhatsApp. Residentes, administradores y staff en un solo canal." />
+        <meta name="description" content="Qondo conecta tu edificio por WhatsApp. Sin apps, sin complicaciones." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -539,19 +569,14 @@ export default function QondoLanding() {
         "@keyframes bp{0%{transform:scale(0.8);opacity:0}100%{transform:scale(1);opacity:1}}",
         "@keyframes fu{0%{transform:translateY(30px);opacity:0}100%{transform:translateY(0);opacity:1}}",
         "@keyframes fp{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}",
-        "*{margin:0;padding:0;box-sizing:border-box}",
-        "html{scroll-behavior:smooth}",
+        "*{margin:0;padding:0;box-sizing:border-box}","html{scroll-behavior:smooth}",
       ].join("\n")}</style>
 
       {/* NAV */}
       <nav style={{position:"fixed",top:0,left:0,right:0,zIndex:100,padding:"14px 24px",background:"rgba(247,245,240,0.88)",backdropFilter:"blur(16px)",borderBottom:"1px solid rgba(0,0,0,0.05)"}}>
         <div style={{maxWidth:1200,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-          <div style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:24,fontWeight:700,color:C.tx,letterSpacing:"-0.02em"}}>
-            <span style={{color:C.accentD}}>q</span>ondo
-          </div>
-          <button style={{padding:"10px 28px",borderRadius:100,border:"none",background:C.accentD,color:"#fff",fontSize:14,fontWeight:600,cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>
-            Agenda un demo
-          </button>
+          <div style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:24,fontWeight:700,color:C.tx,letterSpacing:"-0.02em"}}><span style={{color:C.accentD}}>q</span>ondo</div>
+          <button style={{padding:"10px 28px",borderRadius:100,border:"none",background:C.accentD,color:"#fff",fontSize:14,fontWeight:600,cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>Agenda un demo</button>
         </div>
       </nav>
 
@@ -583,17 +608,11 @@ export default function QondoLanding() {
               <span style={{color:C.txD}}>Y el secreto de Don Carlos seguiria a salvo.</span>
             </p>
             <div style={{display:"flex",gap:16,flexWrap:"wrap"}}>
-              <button style={{padding:"16px 36px",borderRadius:100,border:"none",background:C.accentD,color:"#fff",fontSize:16,fontWeight:600,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",boxShadow:"0 4px 20px rgba(5,150,105,0.25)"}}>
-                {"Cont\u00e1ctanos \u2192"}
-              </button>
-              <button style={{padding:"16px 28px",borderRadius:100,border:"1.5px solid "+C.surfD,background:"#fff",color:C.txM,fontSize:16,fontWeight:500,cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>
-                Ver demo
-              </button>
+              <button style={{padding:"16px 36px",borderRadius:100,border:"none",background:C.accentD,color:"#fff",fontSize:16,fontWeight:600,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",boxShadow:"0 4px 20px rgba(5,150,105,0.25)"}}>{"Cont\u00e1ctanos \u2192"}</button>
+              <button style={{padding:"16px 28px",borderRadius:100,border:"1.5px solid "+C.surfD,background:"#fff",color:C.txM,fontSize:16,fontWeight:500,cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>Ver demo</button>
             </div>
           </div>
-          <div style={{flex:"0 0 auto",animation:hv?"fu 1s ease 0.3s forwards":"none",opacity:hv?1:0}}>
-            <HeroPhone/>
-          </div>
+          <div style={{flex:"0 0 auto",animation:hv?"fu 1s ease 0.3s forwards":"none",opacity:hv?1:0}}><HeroPhone/></div>
         </div>
       </section>
 
@@ -645,8 +664,7 @@ export default function QondoLanding() {
                 {metrics.map((m,i)=>(
                   <div key={i} style={{background:C.surf,borderRadius:12,padding:"12px 14px",border:"1px solid "+C.surfD}}>
                     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
-                      <span style={{fontSize:11,color:C.txD}}>{m.label}</span>
-                      <span style={{fontSize:13}}>{m.icon}</span>
+                      <span style={{fontSize:11,color:C.txD}}>{m.label}</span><span style={{fontSize:13}}>{m.icon}</span>
                     </div>
                     <div style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:24,fontWeight:700,color:m.color}}>{m.value}</div>
                     <div style={{fontSize:10.5,color:C.txD,marginTop:2}}>{m.sub}</div>
@@ -680,8 +698,8 @@ export default function QondoLanding() {
                 </div>
                 <div style={{background:C.surf,borderRadius:12,padding:"14px 16px",border:"1px solid "+C.surfD}}>
                   <div style={{fontSize:13,fontWeight:600,color:C.tx,marginBottom:12}}>Notificaciones enviadas</div>
-                  {notifications.map((n,i)=>(
-                    <div key={i} style={{padding:"6px 0",borderBottom:i<notifications.length-1?"1px solid "+C.surfD:"none"}}>
+                  {notifs.map((n,i)=>(
+                    <div key={i} style={{padding:"6px 0",borderBottom:i<notifs.length-1?"1px solid "+C.surfD:"none"}}>
                       <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:3}}>
                         <div style={{width:6,height:6,borderRadius:"50%",background:n.type==="broadcast"?"#3b82f6":n.type==="resolved"?C.accentD:"#f59e0b"}}/>
                         <span style={{fontSize:12,color:C.tx,lineHeight:1.3}}>{n.text}</span>
@@ -699,23 +717,15 @@ export default function QondoLanding() {
       {/* CTA */}
       <section style={{padding:"100px 24px",textAlign:"center",background:C.bg}}>
         <div style={{maxWidth:640,margin:"0 auto"}}>
-          <h2 style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:"clamp(28px,4.5vw,48px)",fontWeight:700,color:C.tx,lineHeight:1.15,marginBottom:4,letterSpacing:"-0.02em"}}>
-            Tu edificio ya tiene WhatsApp.
-          </h2>
-          <h2 style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:"clamp(28px,4.5vw,48px)",fontWeight:700,color:C.accentD,lineHeight:1.15,marginBottom:40,letterSpacing:"-0.02em"}}>
-            Solo le falta Qondo.
-          </h2>
-          <button style={{padding:"18px 44px",borderRadius:100,border:"none",background:C.accentD,color:"#fff",fontSize:17,fontWeight:600,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",boxShadow:"0 4px 24px rgba(5,150,105,0.25)"}}>
-            {"Cont\u00e1ctanos \u2192"}
-          </button>
+          <h2 style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:"clamp(28px,4.5vw,48px)",fontWeight:700,color:C.tx,lineHeight:1.15,marginBottom:4,letterSpacing:"-0.02em"}}>Tu edificio ya tiene WhatsApp.</h2>
+          <h2 style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:"clamp(28px,4.5vw,48px)",fontWeight:700,color:C.accentD,lineHeight:1.15,marginBottom:40,letterSpacing:"-0.02em"}}>Solo le falta Qondo.</h2>
+          <button style={{padding:"18px 44px",borderRadius:100,border:"none",background:C.accentD,color:"#fff",fontSize:17,fontWeight:600,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",boxShadow:"0 4px 24px rgba(5,150,105,0.25)"}}>{"Cont\u00e1ctanos \u2192"}</button>
         </div>
       </section>
 
       {/* FOOTER */}
       <footer style={{padding:"36px 24px",borderTop:"1px solid "+C.surfD,textAlign:"center",background:C.bg}}>
-        <div style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:18,fontWeight:700,color:C.txD,marginBottom:8}}>
-          <span style={{color:C.accentD}}>q</span>ondo
-        </div>
+        <div style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:18,fontWeight:700,color:C.txD,marginBottom:8}}><span style={{color:C.accentD}}>q</span>ondo</div>
         <p style={{fontSize:13,color:C.txD}}>2026 Qondo.</p>
       </footer>
     </div>
